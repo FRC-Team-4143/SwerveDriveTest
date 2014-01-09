@@ -1,44 +1,64 @@
-
 package org.marswars.frc4143;
 
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.DigitalIOButton;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import org.marswars.frc4143.commands.AngleDown;
+import org.marswars.frc4143.commands.AngleUp;
+import org.marswars.frc4143.commands.SMDB;
+import org.marswars.frc4143.commands.ToggleLock;
+import org.marswars.frc4143.commands.ToggleRobotFront;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-    //// CREATING BUTTONS
-    // One type of button is a joystick button which is any button on a joystick.
-    // You create one by telling it which joystick it's on and which button
-    // number it is.
-    // Joystick stick = new Joystick(port);
-    // Button button = new JoystickButton(stick, buttonNumber);
-    
-    // Another type of button you can create is a DigitalIOButton, which is
-    // a button or switch hooked up to the cypress module. These are useful if
-    // you want to build a customized operator interface.
-    // Button button = new DigitalIOButton(1);
-    
-    // There are a few additional built in buttons you can use. Additionally,
-    // by subclassing Button you can create custom triggers and bind those to
-    // commands the same as any other Button.
-    
-    //// TRIGGERING COMMANDS WITH BUTTONS
-    // Once you have a button, it's trivial to bind it to a button in one of
-    // three ways:
-    
-    // Start the command when the button is pressed and let it run the command
-    // until it is finished as determined by it's isFinished method.
-    // button.whenPressed(new ExampleCommand());
-    
-    // Run the command while the button is being held down and interrupt it once
-    // the button is released.
-    // button.whileHeld(new ExampleCommand());
-    
-    // Start the command when the button is released  and let it run the command
-    // until it is finished as determined by it's isFinished method.
-    // button.whenReleased(new ExampleCommand());
-}
 
+    private static final double deadZone = 0.1;
+    private XboxController xbox = new XboxController(1);
+
+    public OI() {
+        new JoystickButton(xbox, XboxController.ButtonType.kStart.value).whileHeld(new SMDB());
+        new JoystickButton(xbox, XboxController.ButtonType.kY.value).whenPressed(new ToggleRobotFront());
+        new JoystickButton(xbox, XboxController.ButtonType.kX.value).whileHeld(new ToggleLock());
+        new JoystickButton(xbox, XboxController.ButtonType.kL.value).whileHeld(new AngleUp());
+        new JoystickButton(xbox, XboxController.ButtonType.kR.value).whileHeld(new AngleDown());
+
+
+
+    }
+    //SmartDashboard.putData("SetWheelOffsets", new SetWheelOffsets());
+    //SmartDashboard.putData("ResetGyro", new ResetGyro());
+    //SmartDashboard.putData("ResetTurns", new ResetTurns());
+
+    public double getJoystickX() {
+        if (Math.abs(xbox.getRawAxis(1)) < deadZone) {
+            return 0;
+        } else {
+            return xbox.getRawAxis(1);
+        }
+    }
+
+    public double getJoystickY() {
+        if (Math.abs(xbox.getRawAxis(2)) < deadZone) {
+            return 0;
+        } else {
+            return xbox.getRawAxis(2);
+        }
+    }
+
+    public double getJoystickZ() {
+        if (Math.abs(xbox.getRawAxis(4)) < deadZone) {
+            return 0;
+        } else {
+            return xbox.getRawAxis(4);
+        }
+    }
+
+    public double getJoystickA() {
+        if (Math.abs(xbox.getRawAxis(3)) < deadZone) {
+            return 0;
+        } else {
+            return xbox.getRawAxis(3);
+        }
+    }
+}

@@ -1,14 +1,18 @@
+
 package org.marswars.frc4143.commands;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  *
  * @author bradmiller
  */
-public class CrabDrive extends CommandBase {
+public class ResetTurns extends CommandBase {
 
-    public CrabDrive() {
+    public ResetTurns() {
         // Use requires() here to declare subsystem dependencies
         requires(swerveDrive);
+        setRunWhenDisabled(true);
     }
 
     // Called just before this Command runs the first time
@@ -17,13 +21,11 @@ public class CrabDrive extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        swerveDrive.Crab(oi.getJoystickZ() / 2., -oi.getJoystickY(),
-                oi.getJoystickX(), oi.getJoystickA());
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return !DriverStation.getInstance().isDisabled() || swerveDrive.resetTurns();
     }
 
     // Called once after isFinished returns true

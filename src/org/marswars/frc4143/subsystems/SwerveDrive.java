@@ -19,22 +19,22 @@ import org.marswars.frc4143.commands.CrabDrive;
 public class SwerveDrive extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-    
-    private AnalogChannelVolt positionFL = new AnalogChannelVolt(1, 4);
-    private AnalogChannelVolt positionFR = new AnalogChannelVolt(1, 1);
-    private AnalogChannelVolt positionRL = new AnalogChannelVolt(1, 2);
-    private AnalogChannelVolt positionRR = new AnalogChannelVolt(1, 3);
+
+    public AnalogChannelVolt positionFL = new AnalogChannelVolt(1, 4);
+    public AnalogChannelVolt positionFR = new AnalogChannelVolt(1, 1);
+    public AnalogChannelVolt positionRL = new AnalogChannelVolt(1, 2);
+    public AnalogChannelVolt positionRR = new AnalogChannelVolt(1, 3);
     private SpeedController motorSteerFL = new Victor(1, 8);
     private SpeedController motorSteerFR = new Talon(1, 5);
     private SpeedController motorSteerRL = new Jaguar(1, 6);
     private SpeedController motorSteerRR = new Jaguar(1, 7);
-    private PIDController frontRight = new PIDController(RobotMap.P, RobotMap.I,
+    public PIDController frontRight = new PIDController(RobotMap.P, RobotMap.I,
             RobotMap.D, RobotMap.F, positionFR, motorSteerFR, RobotMap.PERIOD);
-    private PIDController frontLeft = new PIDController(RobotMap.P, RobotMap.I,
+    public PIDController frontLeft = new PIDController(RobotMap.P, RobotMap.I,
             RobotMap.D, RobotMap.F, positionFL, motorSteerFL, RobotMap.PERIOD);
-    private PIDController rearRight = new PIDController(RobotMap.P, RobotMap.I,
+    public PIDController rearRight = new PIDController(RobotMap.P, RobotMap.I,
             RobotMap.D, RobotMap.F, positionRR, motorSteerRR, RobotMap.PERIOD);
-    private PIDController rearLeft = new PIDController(RobotMap.P, RobotMap.I,
+    public PIDController rearLeft = new PIDController(RobotMap.P, RobotMap.I,
             RobotMap.D, RobotMap.F, positionRL, motorSteerRL, RobotMap.PERIOD);
     private SpeedController motorDriveFL = new Victor(1, 1);
     private SpeedController motorDriveFR = new Victor(1, 2);
@@ -58,15 +58,16 @@ public class SwerveDrive extends Subsystem {
     private double FRRatio;
     private double RLRatio;
     private double RRRatio;
-    private boolean driveFront;
-    private double FLInv;
-    private double FRInv;
-    private double RLInv;
-    private double RRInv;
+    private boolean driveFront = true;
+    private double FLInv = 1.;
+    private double FRInv = 1.;
+    private double RLInv = 1.;
+    private double RRInv = 1.;
     private double FLOffset;
     private double FROffset;
     private double RLOffset;
     private double RROffset;
+    private double W;
 
     public SwerveDrive() {
         frontRight.setContinuous(RobotMap.CONTINUOUS);
@@ -89,12 +90,27 @@ public class SwerveDrive extends Subsystem {
         rearRight.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
         rearLeft.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
 
+        positionFL.start();
+        positionFR.start();
+        positionRL.start();
+        positionRR.start();
+
+        frontLeft.enable();
+        frontRight.enable();
+        rearLeft.enable();
+        rearRight.enable();
+
         i2c = DigitalModule.getInstance(1).getI2C(0x04 << 1);
     }
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         setDefaultCommand(new CrabDrive());
+    }
+
+    public void toggleFrontBack() {
+        driveFront = !driveFront;
+        outputLED();
     }
 
     public void Crab(double twist, double y, double x, double brake) {
@@ -110,7 +126,7 @@ public class SwerveDrive extends Subsystem {
         if (Math.abs(twist) < 1E-6 && Math.abs(y) < 1E-6 && Math.abs(x) < 1E-6) {
             y = 0.5f;
         }
-        
+
         double FWD = y * Math.cos(robotAngle) + x * Math.sin(robotAngle);
         double STR = -y * Math.sin(robotAngle) + x * Math.cos(robotAngle);
         double radius = Math.sqrt(MathUtils.pow(Y, 2) + MathUtils.pow(X, 2));
@@ -124,7 +140,7 @@ public class SwerveDrive extends Subsystem {
         double FRSetPoint = 2.5;
         double RLSetPoint = 2.5;
         double RRSetPoint = 2.5;
-        
+
         if (DP != 0 || BP != 0) {
             FLSetPoint = (2.5 + 2.5 / Math.PI * MathUtils.atan2(BP, DP));
         }
@@ -144,7 +160,7 @@ public class SwerveDrive extends Subsystem {
         FR = Math.sqrt(MathUtils.pow(BP, 2) + MathUtils.pow(CP, 2));
         RL = Math.sqrt(MathUtils.pow(AP, 2) + MathUtils.pow(DP, 2));
         RR = Math.sqrt(MathUtils.pow(AP, 2) + MathUtils.pow(CP, 2));
-        
+
         //Solve for fastest wheel speed
         double speedarray[] = {Math.abs(FL), Math.abs(FR), Math.abs(RL), Math.abs(RR)};
 
@@ -201,7 +217,7 @@ public class SwerveDrive extends Subsystem {
         }
     }
 
-    private void SetSteerSetpoint(double FLSetPoint, double FRSetPoint, double RLSetPoint, double RRSetPoint) {        
+    private void SetSteerSetpoint(double FLSetPoint, double FRSetPoint, double RLSetPoint, double RRSetPoint) {
         if (driveFront) {
             if (Math.abs(FLSetPoint + FLOffset - positionFL.getAverageVoltage()) < 1.25 || Math.abs(FLSetPoint + FLOffset - positionFL.getAverageVoltage()) > 3.75) {
                 frontLeft.setSetpoint(correctSteerSetpoint(FLSetPoint + FLOffset));
@@ -281,5 +297,91 @@ public class SwerveDrive extends Subsystem {
         } else {
             return setpoint;
         }
+    }
+
+    public void outputLED() {
+        i2c.write(0x0, 40 * (driveFront ? 1 : 0));
+    }
+
+    public void setWheelbase(double w, double x, double y) {
+        W = w;
+        X = x;
+        Y = y;
+    }
+
+    public boolean unwind() {
+        boolean retval = false;
+        unwinding = true;
+        retval |= unwindWheel(positionFL, frontLeft);
+        retval |= unwindWheel(positionFR, frontRight);
+        retval |= unwindWheel(positionRL, rearLeft);
+        retval |= unwindWheel(positionRR, rearRight);
+        if (!retval) {
+            unwinding = false;
+        }
+        return retval;
+    }
+    
+    private boolean unwindWheel(AnalogChannelVolt wheel, PIDController pid) {
+        double temp;
+        double turns = wheel.getTurns();
+        if (turns > 1) {
+            temp = wheel.getAverageVoltage() - 1.0;
+            if (temp < 0.0) {
+                temp = 5.0 + temp;
+            }
+            pid.setSetpoint(temp);
+            return true;
+        } else if (turns < 1) {
+            temp = wheel.getAverageVoltage() + 1.0;
+            if (temp > 5.0) {
+                temp = temp - 5.0;
+            }
+            pid.setSetpoint(temp);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void doneUnwind() {
+        unwinding = false;
+    }
+
+    public void angleUp() {
+        robotAngle += 0.1;
+        if (robotAngle > 360.) {
+            robotAngle = 0.;
+        }
+        outputLED();
+    }
+    
+     public void angleDown() {
+        robotAngle -= 0.1;
+        if (robotAngle > 360.) {
+            robotAngle = 0.;
+        }
+        outputLED();
+    }
+
+    public boolean resetTurns() {
+        frontRight.enable();
+        rearRight.enable();
+        frontLeft.enable();
+        rearLeft.enable();
+        positionFR.resetTurns();
+        positionFL.resetTurns();
+        positionRR.resetTurns();
+        positionRL.resetTurns();
+        robotAngle = 0.;
+        return true;
+
+    }
+
+    public void setOffsets(double FLOff, double FROff, double RLOff, double RROff) {
+        FLOffset = FLOff;
+        FROffset = FROff;
+        RLOffset = RLOff;
+        RROffset = RROff;
     }
 }

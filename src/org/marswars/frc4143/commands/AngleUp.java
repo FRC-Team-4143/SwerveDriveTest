@@ -4,9 +4,9 @@ package org.marswars.frc4143.commands;
  *
  * @author bradmiller
  */
-public class CrabDrive extends CommandBase {
+public class AngleUp extends CommandBase {
 
-    public CrabDrive() {
+    public AngleUp() {
         // Use requires() here to declare subsystem dependencies
         requires(swerveDrive);
     }
@@ -17,8 +17,7 @@ public class CrabDrive extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        swerveDrive.Crab(oi.getJoystickZ() / 2., -oi.getJoystickY(),
-                oi.getJoystickX(), oi.getJoystickA());
+        swerveDrive.angleUp();
     }
 
     // Make this return true when this Command no longer needs to run execute()

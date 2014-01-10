@@ -62,7 +62,7 @@ public class AnalogChannelVolt extends AnalogChannel {
             temp = rev; // max
         }
         temp = (temp / ratio) + ((m_count.get() % ratio) * halfrev); // half scale
-        //temp = rev - temp; // inverse
+        temp = rev - temp; // inverse
         return temp;
     }
     

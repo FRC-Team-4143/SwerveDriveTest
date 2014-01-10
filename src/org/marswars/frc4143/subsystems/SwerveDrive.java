@@ -41,7 +41,7 @@ public class SwerveDrive extends Subsystem {
     private SpeedController motorDriveRL = new Victor(1, 4);
     private SpeedController motorDriveRR = new Victor(1, 3);
     //private DigitalModule i2cmodule = new DigitalModule();
-    I2C i2c;
+    public I2C i2c;
     boolean unwinding = false;
     private double robotAngle = 0.;
     private double X;

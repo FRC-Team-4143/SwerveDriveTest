@@ -1,9 +1,12 @@
 package org.marswars.frc4143;
 
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.marswars.frc4143.commands.AngleDown;
 import org.marswars.frc4143.commands.AngleUp;
+import org.marswars.frc4143.commands.ResetTurns;
 import org.marswars.frc4143.commands.SMDB;
+import org.marswars.frc4143.commands.SetWheelOffsets;
 import org.marswars.frc4143.commands.ToggleLock;
 import org.marswars.frc4143.commands.ToggleRobotFront;
 
@@ -22,13 +25,14 @@ public class OI {
         new JoystickButton(xbox, XboxController.ButtonType.kX.value).whileHeld(new ToggleLock());
         new JoystickButton(xbox, XboxController.ButtonType.kL.value).whileHeld(new AngleUp());
         new JoystickButton(xbox, XboxController.ButtonType.kR.value).whileHeld(new AngleDown());
-
+        SmartDashboard.putData("SetWheelOffsets", new SetWheelOffsets());
+        SmartDashboard.putData("ResetTurns", new ResetTurns());
+        SmartDashboard.putData("SMDB", new SMDB());
 
 
     }
-    //SmartDashboard.putData("SetWheelOffsets", new SetWheelOffsets());
     //SmartDashboard.putData("ResetGyro", new ResetGyro());
-    //SmartDashboard.putData("ResetTurns", new ResetTurns());
+    
 
     public double getJoystickX() {
         if (Math.abs(xbox.getRawAxis(1)) < deadZone) {

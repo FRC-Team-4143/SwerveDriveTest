@@ -44,6 +44,10 @@ public class SwerveDriveTest extends IterativeRobot {
         // schedule the autonomous command (example)
         autonomousCommand.start();
     }
+    
+    public void disabledInit() {
+        CommandBase.swerveDrive.i2c.write(1, 0);
+    }
 
     /**
      * This function is called periodically during autonomous

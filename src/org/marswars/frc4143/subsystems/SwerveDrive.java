@@ -312,16 +312,13 @@ public class SwerveDrive extends Subsystem {
     public boolean unwind() {
         boolean retval = false;
         unwinding = true;
-        retval |= unwindWheel(positionFL, frontLeft);
-        retval |= unwindWheel(positionFR, frontRight);
-        retval |= unwindWheel(positionRL, rearLeft);
-        retval |= unwindWheel(positionRR, rearRight);
+        retval = unwindWheel(positionFL, frontLeft) || unwindWheel(positionFR, frontRight) || unwindWheel(positionRL, rearLeft) || unwindWheel(positionRR, rearRight);
         if (!retval) {
             unwinding = false;
         }
         return retval;
     }
-    
+
     private boolean unwindWheel(AnalogChannelVolt wheel, PIDController pid) {
         double temp;
         double turns = wheel.getTurns();
@@ -355,8 +352,8 @@ public class SwerveDrive extends Subsystem {
         }
         outputLED();
     }
-    
-     public void angleDown() {
+
+    public void angleDown() {
         robotAngle -= 0.1;
         if (robotAngle > 360.) {
             robotAngle = 0.;

@@ -5,6 +5,8 @@ package org.marswars.frc4143.commands;
  * @author bradmiller
  */
 public class ToggleRobotFront extends CommandBase {
+    
+    private boolean executed = false;
 
     public ToggleRobotFront() {
         // Use requires() here to declare subsystem dependencies
@@ -17,12 +19,14 @@ public class ToggleRobotFront extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        swerveDrive.toggleFrontBack();
+        if(!executed) {
+            swerveDrive.toggleFrontBack();
+        }
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return executed;
     }
 
     // Called once after isFinished returns true

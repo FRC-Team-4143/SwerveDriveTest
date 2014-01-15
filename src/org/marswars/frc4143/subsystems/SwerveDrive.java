@@ -124,7 +124,7 @@ public class SwerveDrive extends Subsystem {
         }
 
         if (Math.abs(twist) < 1E-6 && Math.abs(y) < 1E-6 && Math.abs(x) < 1E-6) {
-            y = 0.5f;
+            y = 0.05;
         }
 
         double FWD = y * Math.cos(robotAngle) + x * Math.sin(robotAngle);

@@ -16,7 +16,7 @@ import org.marswars.frc4143.commands.ToggleRobotFront;
  */
 public class OI {
 
-    private static final double deadZone = 0.1;
+    private static final double deadZone = 0.15;
     private XboxController xbox = new XboxController(1);
 
     public OI() {

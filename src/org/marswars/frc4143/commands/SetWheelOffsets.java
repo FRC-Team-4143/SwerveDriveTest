@@ -15,7 +15,8 @@ public class SetWheelOffsets extends CommandBase {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        if (DriverStation.getInstance().isDisabled()) {
+        System.out.print("SetWheelOffsets initialize\n");
+
             double FLOffset = swerveDrive.positionFL.getAverageVoltage() - 2.5;
             double FROffset = swerveDrive.positionFR.getAverageVoltage() - 2.5;
             double RLOffset = swerveDrive.positionRL.getAverageVoltage() - 2.5;
@@ -24,10 +25,7 @@ public class SetWheelOffsets extends CommandBase {
             swerveDrive.setOffsets(FLOffset, FROffset, RLOffset, RROffset);
 
             setTimeout(2);
-        } else {
-            setTimeout(0);
-        }
-    }
+     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {

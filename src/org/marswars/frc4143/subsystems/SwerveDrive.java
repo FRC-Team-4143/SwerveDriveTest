@@ -26,9 +26,9 @@ public class SwerveDrive extends Subsystem {
     public AnalogChannelVolt positionRL = new AnalogChannelVolt(1, 2);
     public AnalogChannelVolt positionRR = new AnalogChannelVolt(1, 3);
     private SpeedController motorSteerFL = new Victor(1, 8);
-    private SpeedController motorSteerFR = new Talon(1, 5);
-    private SpeedController motorSteerRL = new Jaguar(1, 6);
-    private SpeedController motorSteerRR = new Jaguar(1, 7);
+    private SpeedController motorSteerFR = new Victor(1, 5);
+    private SpeedController motorSteerRL = new Victor(1, 6);
+    private SpeedController motorSteerRR = new Victor(1, 7);
     public PIDController frontRight = new PIDController(RobotMap.P, RobotMap.I,
             RobotMap.D, RobotMap.F, positionFR, motorSteerFR, RobotMap.PERIOD);
     public PIDController frontLeft = new PIDController(RobotMap.P, RobotMap.I,

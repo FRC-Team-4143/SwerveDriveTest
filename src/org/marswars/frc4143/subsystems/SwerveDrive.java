@@ -109,8 +109,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void toggleFrontBack() {
-        if(driveFront == true) driveFront = false;
-        else driveFront = true;
+        driveFront = !driveFront;
         outputLED();
     }
 
@@ -363,11 +362,6 @@ public class SwerveDrive extends Subsystem {
     }
 
     public boolean resetTurns() {
-        System.out.print("resetTurns start\n");
-        //frontRight.enable();
-        //rearRight.enable();
-        //frontLeft.enable();
-        //rearLeft.enable();
         positionFR.resetTurns();
         positionFL.resetTurns();
         positionRR.resetTurns();
@@ -378,11 +372,6 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void setOffsets(double FLOff, double FROff, double RLOff, double RROff) {
-        System.out.print("setOffsets start\n");
-        System.out.print(FLOff);
-        System.out.print(FROff);
-        System.out.print(RLOff);
-        System.out.print(RROff);
         FLOffset = FLOff;
         FROffset = FROff;
         RLOffset = RLOff;

@@ -21,6 +21,7 @@ public class ToggleRobotFront extends CommandBase {
     protected void execute() {
         if(!executed) {
             swerveDrive.toggleFrontBack();
+            executed = true;
         }
     }
 
@@ -31,6 +32,7 @@ public class ToggleRobotFront extends CommandBase {
 
     // Called once after isFinished returns true
     protected void end() {
+        executed = false;
     }
 
     // Called when another command which requires one or more of the same

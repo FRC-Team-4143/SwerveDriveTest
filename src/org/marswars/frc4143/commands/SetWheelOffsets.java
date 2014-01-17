@@ -7,26 +7,23 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @author bradmiller
  */
 public class SetWheelOffsets extends CommandBase {
+    
+    private boolean m_Executed = false;
 
     public SetWheelOffsets() {
         // Use requires() here to declare subsystem dependencies
-        requires(swerveDrive);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        if (DriverStation.getInstance().isDisabled()) {
-            double FLOffset = swerveDrive.positionFL.getAverageVoltage() - 2.5;
-            double FROffset = swerveDrive.positionFR.getAverageVoltage() - 2.5;
-            double RLOffset = swerveDrive.positionRL.getAverageVoltage() - 2.5;
-            double RROffset = swerveDrive.positionRR.getAverageVoltage() - 2.5;
+        double FLOffset = swerveDrive.positionFL.getAverageVoltage() - 2.5;
+        double FROffset = swerveDrive.positionFR.getAverageVoltage() - 2.5;
+        double RLOffset = swerveDrive.positionRL.getAverageVoltage() - 2.5;
+        double RROffset = swerveDrive.positionRR.getAverageVoltage() - 2.5;
 
-            swerveDrive.setOffsets(FLOffset, FROffset, RLOffset, RROffset);
+        swerveDrive.setOffsets(FLOffset, FROffset, RLOffset, RROffset);
 
-            setTimeout(2);
-        } else {
-            setTimeout(0);
-        }
+        m_Executed = true;
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -43,7 +40,7 @@ public class SetWheelOffsets extends CommandBase {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+        return m_Executed;
     }
 
     // Called once after isFinished returns true
@@ -56,6 +53,7 @@ public class SetWheelOffsets extends CommandBase {
         DriverStation.getInstance().setDigitalOut(6, false);
         DriverStation.getInstance().setDigitalOut(7, false);
         DriverStation.getInstance().setDigitalOut(8, false);
+        m_Executed = false;
     }
 
     // Called when another command which requires one or more of the same

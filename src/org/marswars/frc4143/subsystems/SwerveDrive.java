@@ -69,7 +69,7 @@ public class SwerveDrive extends Subsystem {
     private double RLOffset;
     private double RROffset;
     private double W;
-    private static ConstantMap fileMap;
+    private static ConstantMap fileMap = new ConstantMap();
 
     public SwerveDrive() {
         frontRight.setContinuous(RobotMap.CONTINUOUS);

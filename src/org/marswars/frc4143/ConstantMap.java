@@ -38,8 +38,8 @@ public class ConstantMap {
 
             for (Enumeration e = m_Map.keys(); e.hasMoreElements();) {
                 String key = (String) e.nextElement();
-                theFile.writeChars((key + "|"));
-                theFile.writeChars(m_Map.get(key).toString() + "\n");
+                theFile.writeUTF((key + "|"));
+                theFile.writeUTF(m_Map.get(key).toString() + "\n");
                 theFile.flush();
             }
             theFile.close();
@@ -78,6 +78,7 @@ public class ConstantMap {
                 }
                 m_Map.put(key, new Double(Double.parseDouble(value)));
             }
+            theFile.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (Exception ex) {

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.marswars.frc4143.AnalogChannelVolt;
+import org.marswars.frc4143.ConstantMap;
 import org.marswars.frc4143.RobotMap;
 import org.marswars.frc4143.commands.CrabDrive;
 
@@ -68,6 +69,7 @@ public class SwerveDrive extends Subsystem {
     private double RLOffset;
     private double RROffset;
     private double W;
+    private static ConstantMap fileMap;
 
     public SwerveDrive() {
         frontRight.setContinuous(RobotMap.CONTINUOUS);
@@ -101,6 +103,20 @@ public class SwerveDrive extends Subsystem {
         rearRight.enable();
 
         i2c = DigitalModule.getInstance(1).getI2C(0x04 << 1);
+        
+        fileMap.load();
+        if (fileMap.m_Map.containsKey("FLOff")) {
+            FLOffset = ((Double)fileMap.m_Map.get("FLOff")).doubleValue();
+        }
+        if (fileMap.m_Map.containsKey("FROff")) {
+            FROffset = ((Double)fileMap.m_Map.get("FROff")).doubleValue();
+        }
+        if (fileMap.m_Map.containsKey("RLOff")) {
+            RLOffset = ((Double)fileMap.m_Map.get("RLOff")).doubleValue();
+        }
+        if (fileMap.m_Map.containsKey("RROff")) {
+            RROffset = ((Double)fileMap.m_Map.get("RROff")).doubleValue();
+        }
     }
 
     public void initDefaultCommand() {
@@ -376,5 +392,10 @@ public class SwerveDrive extends Subsystem {
         FROffset = FROff;
         RLOffset = RLOff;
         RROffset = RROff;
+        fileMap.m_Map.put("FLOffset", new Double(FLOff));
+        fileMap.m_Map.put("FROffset", new Double(FROff));
+        fileMap.m_Map.put("RLOffset", new Double(RLOff));
+        fileMap.m_Map.put("RROffset", new Double(RROff));
+        fileMap.save();
     }
 }

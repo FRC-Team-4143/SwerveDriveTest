@@ -21,4 +21,17 @@ public class RobotMap {
     public static final double STEERPOW = 0.75;
     public static final double TOLERANCE = 0.2;
     public static final double PERIOD = 0.02;
+    
+    public static final int portPotSteerFR = 1;
+    public static final int portPotSteerRL = 2;
+    public static final int portPotSteerRR = 3;
+    public static final int portPotSteerFL = 4;
+    public static final int portMotorDriveFL = 1;
+    public static final int portMotorDriveFR = 2;
+    public static final int portMotorDriveRR = 3;
+    public static final int portMotorDriveRL = 4;
+    public static final int portMotorSteerFR = 5;
+    public static final int portMotorSteerRL = 6;
+    public static final int portMotorSteerRR = 7;
+    public static final int portMotorSteerFL = 8;
 }

@@ -16,10 +16,10 @@ public class SetWheelOffsets extends CommandBase {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        double FLOffset = swerveDrive.positionFL.getAverageVoltage() - 2.5;
-        double FROffset = swerveDrive.positionFR.getAverageVoltage() - 2.5;
-        double RLOffset = swerveDrive.positionRL.getAverageVoltage() - 2.5;
-        double RROffset = swerveDrive.positionRR.getAverageVoltage() - 2.5;
+        double FLOffset = swerveDrive.potSteerFL.getAverageVoltage() - 2.5;
+        double FROffset = swerveDrive.potSteerFR.getAverageVoltage() - 2.5;
+        double RLOffset = swerveDrive.potSteerRL.getAverageVoltage() - 2.5;
+        double RROffset = swerveDrive.potSteerRR.getAverageVoltage() - 2.5;
 
         swerveDrive.setOffsets(FLOffset, FROffset, RLOffset, RROffset);
 

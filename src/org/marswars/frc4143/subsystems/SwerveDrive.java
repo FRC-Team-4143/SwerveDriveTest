@@ -3,10 +3,8 @@ package org.marswars.frc4143.subsystems;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.marswars.frc4143.AnalogChannelVolt;
@@ -21,29 +19,28 @@ public class SwerveDrive extends Subsystem {
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 
-    public AnalogChannelVolt positionFL = new AnalogChannelVolt(1, 4);
-    public AnalogChannelVolt positionFR = new AnalogChannelVolt(1, 1);
-    public AnalogChannelVolt positionRL = new AnalogChannelVolt(1, 2);
-    public AnalogChannelVolt positionRR = new AnalogChannelVolt(1, 3);
-    private SpeedController motorSteerFL = new Victor(1, 8);
-    private SpeedController motorSteerFR = new Victor(1, 5);
-    private SpeedController motorSteerRL = new Victor(1, 6);
-    private SpeedController motorSteerRR = new Victor(1, 7);
-    public PIDController frontRight = new PIDController(RobotMap.P, RobotMap.I,
-            RobotMap.D, RobotMap.F, positionFR, motorSteerFR, RobotMap.PERIOD);
-    public PIDController frontLeft = new PIDController(RobotMap.P, RobotMap.I,
-            RobotMap.D, RobotMap.F, positionFL, motorSteerFL, RobotMap.PERIOD);
-    public PIDController rearRight = new PIDController(RobotMap.P, RobotMap.I,
-            RobotMap.D, RobotMap.F, positionRR, motorSteerRR, RobotMap.PERIOD);
-    public PIDController rearLeft = new PIDController(RobotMap.P, RobotMap.I,
-            RobotMap.D, RobotMap.F, positionRL, motorSteerRL, RobotMap.PERIOD);
-    private SpeedController motorDriveFL = new Victor(1, 1);
-    private SpeedController motorDriveFR = new Victor(1, 2);
-    private SpeedController motorDriveRL = new Victor(1, 4);
-    private SpeedController motorDriveRR = new Victor(1, 3);
-    //private DigitalModule i2cmodule = new DigitalModule();
+    public AnalogChannelVolt potSteerFL = new AnalogChannelVolt(RobotMap.portPotSteerFL);
+    public AnalogChannelVolt potSteerFR = new AnalogChannelVolt(RobotMap.portPotSteerFR);
+    public AnalogChannelVolt potSteerRL = new AnalogChannelVolt(RobotMap.portPotSteerRL);
+    public AnalogChannelVolt potSteerRR = new AnalogChannelVolt(RobotMap.portPotSteerRR);
+    private SpeedController motorSteerFL = new Victor(RobotMap.portMotorSteerFL);
+    private SpeedController motorSteerFR = new Victor(RobotMap.portMotorSteerFR);
+    private SpeedController motorSteerRL = new Victor(RobotMap.portMotorSteerRL);
+    private SpeedController motorSteerRR = new Victor(RobotMap.portMotorSteerRR);
+    public PIDController pidFR = new PIDController(RobotMap.P, RobotMap.I,
+            RobotMap.D, RobotMap.F, potSteerFR, motorSteerFR, RobotMap.PERIOD);
+    public PIDController pidFL = new PIDController(RobotMap.P, RobotMap.I,
+            RobotMap.D, RobotMap.F, potSteerFL, motorSteerFL, RobotMap.PERIOD);
+    public PIDController pidRR = new PIDController(RobotMap.P, RobotMap.I,
+            RobotMap.D, RobotMap.F, potSteerRR, motorSteerRR, RobotMap.PERIOD);
+    public PIDController pidRL = new PIDController(RobotMap.P, RobotMap.I,
+            RobotMap.D, RobotMap.F, potSteerRL, motorSteerRL, RobotMap.PERIOD);
+    private SpeedController motorDriveFL = new Victor(RobotMap.portMotorDriveFL);
+    private SpeedController motorDriveFR = new Victor(RobotMap.portMotorDriveFR);
+    private SpeedController motorDriveRL = new Victor(RobotMap.portMotorDriveRL);
+    private SpeedController motorDriveRR = new Victor(RobotMap.portMotorDriveRR);
     public I2C i2c;
-    boolean unwinding = false;
+    private boolean isUnwinding = false;
     private double robotAngle = 0.;
     private double X;
     private double Y;
@@ -72,35 +69,35 @@ public class SwerveDrive extends Subsystem {
     private static ConstantMap fileMap = new ConstantMap();
 
     public SwerveDrive() {
-        frontRight.setContinuous(RobotMap.CONTINUOUS);
-        frontLeft.setContinuous(RobotMap.CONTINUOUS);
-        rearRight.setContinuous(RobotMap.CONTINUOUS);
-        rearLeft.setContinuous(RobotMap.CONTINUOUS);
+        pidFR.setContinuous(RobotMap.CONTINUOUS);
+        pidFL.setContinuous(RobotMap.CONTINUOUS);
+        pidRR.setContinuous(RobotMap.CONTINUOUS);
+        pidRL.setContinuous(RobotMap.CONTINUOUS);
 
-        frontRight.setAbsoluteTolerance(RobotMap.TOLERANCE);
-        frontLeft.setAbsoluteTolerance(RobotMap.TOLERANCE);
-        rearRight.setAbsoluteTolerance(RobotMap.TOLERANCE);
-        rearLeft.setAbsoluteTolerance(RobotMap.TOLERANCE);
+        pidFR.setAbsoluteTolerance(RobotMap.TOLERANCE);
+        pidFL.setAbsoluteTolerance(RobotMap.TOLERANCE);
+        pidRR.setAbsoluteTolerance(RobotMap.TOLERANCE);
+        pidRL.setAbsoluteTolerance(RobotMap.TOLERANCE);
 
-        frontRight.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
-        frontLeft.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
-        rearRight.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
-        rearLeft.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
+        pidFR.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
+        pidFL.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
+        pidRR.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
+        pidRL.setInputRange(RobotMap.POTMIN, RobotMap.POTMAX);
 
-        frontRight.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
-        frontLeft.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
-        rearRight.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
-        rearLeft.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
+        pidFR.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
+        pidFL.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
+        pidRR.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
+        pidRL.setOutputRange(-RobotMap.STEERPOW, RobotMap.STEERPOW);
 
-        positionFL.start();
-        positionFR.start();
-        positionRL.start();
-        positionRR.start();
+        potSteerFL.start();
+        potSteerFR.start();
+        potSteerRL.start();
+        potSteerRR.start();
 
-        frontLeft.enable();
-        frontRight.enable();
-        rearLeft.enable();
-        rearRight.enable();
+        pidFL.enable();
+        pidFR.enable();
+        pidRL.enable();
+        pidRR.enable();
 
         i2c = DigitalModule.getInstance(1).getI2C(0x04 << 1);
         
@@ -130,11 +127,11 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void Crab(double twist, double y, double x, double brake) {
-        if (unwinding
-                || Math.abs(positionFL.getTurns()) > 5
-                || Math.abs(positionFR.getTurns()) > 5
-                || Math.abs(positionRL.getTurns()) > 5
-                || Math.abs(positionRR.getTurns()) > 5) {
+        if (isUnwinding
+                || Math.abs(potSteerFL.getTurns()) > 5
+                || Math.abs(potSteerFR.getTurns()) > 5
+                || Math.abs(potSteerRL.getTurns()) > 5
+                || Math.abs(potSteerRR.getTurns()) > 5) {
             setDriveSpeed(0., 0., 0., 0.);
             return;
         }
@@ -235,69 +232,69 @@ public class SwerveDrive extends Subsystem {
 
     private void SetSteerSetpoint(double FLSetPoint, double FRSetPoint, double RLSetPoint, double RRSetPoint) {
         if (driveFront) {
-            if (Math.abs(FLSetPoint + FLOffset - positionFL.getAverageVoltage()) < 1.25 || Math.abs(FLSetPoint + FLOffset - positionFL.getAverageVoltage()) > 3.75) {
-                frontLeft.setSetpoint(correctSteerSetpoint(FLSetPoint + FLOffset));
+            if (Math.abs(FLSetPoint + FLOffset - potSteerFL.getAverageVoltage()) < 1.25 || Math.abs(FLSetPoint + FLOffset - potSteerFL.getAverageVoltage()) > 3.75) {
+                pidFL.setSetpoint(correctSteerSetpoint(FLSetPoint + FLOffset));
                 FLInv = 1;
             } else {
-                frontLeft.setSetpoint(correctSteerSetpoint(FLSetPoint + FLOffset - 2.5));
+                pidFL.setSetpoint(correctSteerSetpoint(FLSetPoint + FLOffset - 2.5));
                 FLInv = -1;
             }
 
-            if (Math.abs(FRSetPoint + FROffset - positionFR.getAverageVoltage()) < 1.25 || Math.abs(FRSetPoint + FROffset - positionFR.getAverageVoltage()) > 3.75) {
-                frontRight.setSetpoint(correctSteerSetpoint(FRSetPoint + FROffset));
+            if (Math.abs(FRSetPoint + FROffset - potSteerFR.getAverageVoltage()) < 1.25 || Math.abs(FRSetPoint + FROffset - potSteerFR.getAverageVoltage()) > 3.75) {
+                pidFR.setSetpoint(correctSteerSetpoint(FRSetPoint + FROffset));
                 FRInv = 1;
             } else {
-                frontRight.setSetpoint(correctSteerSetpoint(FRSetPoint + FROffset - 2.5));
+                pidFR.setSetpoint(correctSteerSetpoint(FRSetPoint + FROffset - 2.5));
                 FRInv = -1;
             }
 
-            if (Math.abs(RLSetPoint + RLOffset - positionRL.getAverageVoltage()) < 1.25 || Math.abs(RLSetPoint + RLOffset - positionRL.getAverageVoltage()) > 3.75) {
-                rearLeft.setSetpoint(correctSteerSetpoint(RLSetPoint + RLOffset));
+            if (Math.abs(RLSetPoint + RLOffset - potSteerRL.getAverageVoltage()) < 1.25 || Math.abs(RLSetPoint + RLOffset - potSteerRL.getAverageVoltage()) > 3.75) {
+                pidRL.setSetpoint(correctSteerSetpoint(RLSetPoint + RLOffset));
                 RLInv = 1;
             } else {
-                rearLeft.setSetpoint(correctSteerSetpoint(RLSetPoint + RLOffset - 2.5));
+                pidRL.setSetpoint(correctSteerSetpoint(RLSetPoint + RLOffset - 2.5));
                 RLInv = -1;
             }
 
-            if (Math.abs(RRSetPoint + RROffset - positionRR.getAverageVoltage()) < 1.25 || Math.abs(RRSetPoint + RROffset - positionRR.getAverageVoltage()) > 3.75) {
-                rearRight.setSetpoint(correctSteerSetpoint(RRSetPoint + RROffset));
+            if (Math.abs(RRSetPoint + RROffset - potSteerRR.getAverageVoltage()) < 1.25 || Math.abs(RRSetPoint + RROffset - potSteerRR.getAverageVoltage()) > 3.75) {
+                pidRR.setSetpoint(correctSteerSetpoint(RRSetPoint + RROffset));
                 RRInv = 1;
             } else {
-                rearRight.setSetpoint(correctSteerSetpoint(RRSetPoint + RROffset - 2.5));
+                pidRR.setSetpoint(correctSteerSetpoint(RRSetPoint + RROffset - 2.5));
                 RRInv = -1;
             }
 
         } else {
 
-            if (Math.abs(RRSetPoint + FLOffset - positionFL.getAverageVoltage()) < 1.25 || Math.abs(RRSetPoint + FLOffset - positionFL.getAverageVoltage()) > 3.75) {
-                frontLeft.setSetpoint(correctSteerSetpoint(RRSetPoint + FLOffset));
+            if (Math.abs(RRSetPoint + FLOffset - potSteerFL.getAverageVoltage()) < 1.25 || Math.abs(RRSetPoint + FLOffset - potSteerFL.getAverageVoltage()) > 3.75) {
+                pidFL.setSetpoint(correctSteerSetpoint(RRSetPoint + FLOffset));
                 FLInv = 1;
             } else {
-                frontLeft.setSetpoint(correctSteerSetpoint(RRSetPoint + FLOffset - 2.5));
+                pidFL.setSetpoint(correctSteerSetpoint(RRSetPoint + FLOffset - 2.5));
                 FLInv = -1;
             }
 
-            if (Math.abs(RLSetPoint + FROffset - positionFR.getAverageVoltage()) < 1.25 || Math.abs(RLSetPoint + FROffset - positionFR.getAverageVoltage()) > 3.75) {
-                frontRight.setSetpoint(correctSteerSetpoint(RLSetPoint + FROffset));
+            if (Math.abs(RLSetPoint + FROffset - potSteerFR.getAverageVoltage()) < 1.25 || Math.abs(RLSetPoint + FROffset - potSteerFR.getAverageVoltage()) > 3.75) {
+                pidFR.setSetpoint(correctSteerSetpoint(RLSetPoint + FROffset));
                 FRInv = 1;
             } else {
-                frontRight.setSetpoint(correctSteerSetpoint(RLSetPoint + FROffset - 2.5));
+                pidFR.setSetpoint(correctSteerSetpoint(RLSetPoint + FROffset - 2.5));
                 FRInv = -1;
             }
 
-            if (Math.abs(FRSetPoint + RLOffset - positionRL.getAverageVoltage()) < 1.25 || Math.abs(FRSetPoint + RLOffset - positionRL.getAverageVoltage()) > 3.75) {
-                rearLeft.setSetpoint(correctSteerSetpoint(FRSetPoint + RLOffset));
+            if (Math.abs(FRSetPoint + RLOffset - potSteerRL.getAverageVoltage()) < 1.25 || Math.abs(FRSetPoint + RLOffset - potSteerRL.getAverageVoltage()) > 3.75) {
+                pidRL.setSetpoint(correctSteerSetpoint(FRSetPoint + RLOffset));
                 RLInv = 1;
             } else {
-                rearLeft.setSetpoint(correctSteerSetpoint(FRSetPoint + RLOffset - 2.5));
+                pidRL.setSetpoint(correctSteerSetpoint(FRSetPoint + RLOffset - 2.5));
                 RLInv = -1;
             }
 
-            if (Math.abs(FLSetPoint + RROffset - positionRR.getAverageVoltage()) < 1.25 || Math.abs(FLSetPoint + RROffset - positionRR.getAverageVoltage()) > 3.75) {
-                rearRight.setSetpoint(correctSteerSetpoint(FLSetPoint + RROffset));
+            if (Math.abs(FLSetPoint + RROffset - potSteerRR.getAverageVoltage()) < 1.25 || Math.abs(FLSetPoint + RROffset - potSteerRR.getAverageVoltage()) > 3.75) {
+                pidRR.setSetpoint(correctSteerSetpoint(FLSetPoint + RROffset));
                 RRInv = 1;
             } else {
-                rearRight.setSetpoint(correctSteerSetpoint(FLSetPoint + RROffset - 2.5));
+                pidRR.setSetpoint(correctSteerSetpoint(FLSetPoint + RROffset - 2.5));
                 RRInv = -1;
             }
         }
@@ -327,10 +324,10 @@ public class SwerveDrive extends Subsystem {
 
     public boolean unwind() {
         boolean retval = false;
-        unwinding = true;
-        retval = unwindWheel(positionFL, frontLeft) || unwindWheel(positionFR, frontRight) || unwindWheel(positionRL, rearLeft) || unwindWheel(positionRR, rearRight);
+        isUnwinding = true;
+        retval = unwindWheel(potSteerFL, pidFL) || unwindWheel(potSteerFR, pidFR) || unwindWheel(potSteerRL, pidRL) || unwindWheel(potSteerRR, pidRR);
         if (!retval) {
-            unwinding = false;
+            isUnwinding = false;
         }
         return retval;
     }
@@ -358,7 +355,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public void doneUnwind() {
-        unwinding = false;
+        isUnwinding = false;
     }
 
     public void angleUp() {
@@ -378,10 +375,10 @@ public class SwerveDrive extends Subsystem {
     }
 
     public boolean resetTurns() {
-        positionFR.resetTurns();
-        positionFL.resetTurns();
-        positionRR.resetTurns();
-        positionRL.resetTurns();
+        potSteerFR.resetTurns();
+        potSteerFL.resetTurns();
+        potSteerRR.resetTurns();
+        potSteerRL.resetTurns();
         robotAngle = 0.;
         return true;
 

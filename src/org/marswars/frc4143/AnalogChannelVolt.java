@@ -24,6 +24,10 @@ public class AnalogChannelVolt extends AnalogChannel {
     private AnalogTriggerOutput m_trigo;
     private AnalogTriggerOutput m_trig2o;
     private Counter m_count;
+    
+    public AnalogChannelVolt(int channel) {
+        this(1, channel);
+    }
 
     public AnalogChannelVolt(int moduleNumber, int channel) {
         super(moduleNumber, channel);

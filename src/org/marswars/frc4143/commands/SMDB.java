@@ -20,29 +20,29 @@ public class SMDB extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        SmartDashboard.putNumber("FrontLeftVolt", swerveDrive.positionFL.getVoltage());
-        SmartDashboard.putNumber("FrontRightVolt", swerveDrive.positionFR.getVoltage());
-        SmartDashboard.putNumber("RearLeftVolt", swerveDrive.positionRL.getVoltage());
-        SmartDashboard.putNumber("RearRightVolt", swerveDrive.positionRR.getVoltage());
-        SmartDashboard.putNumber("FrontLeftturns", swerveDrive.positionFL.getTurns());
-        SmartDashboard.putNumber("FrontRightturns", swerveDrive.positionFR.getTurns());
-        SmartDashboard.putNumber("RearLeftturns", swerveDrive.positionRL.getTurns());
-        SmartDashboard.putNumber("RearRightturns", swerveDrive.positionRR.getTurns());
+        SmartDashboard.putNumber("FrontLeftVolt", swerveDrive.potSteerFL.getVoltage());
+        SmartDashboard.putNumber("FrontRightVolt", swerveDrive.potSteerFR.getVoltage());
+        SmartDashboard.putNumber("RearLeftVolt", swerveDrive.potSteerRL.getVoltage());
+        SmartDashboard.putNumber("RearRightVolt", swerveDrive.potSteerRR.getVoltage());
+        SmartDashboard.putNumber("FrontLeftturns", swerveDrive.potSteerFL.getTurns());
+        SmartDashboard.putNumber("FrontRightturns", swerveDrive.potSteerFR.getTurns());
+        SmartDashboard.putNumber("RearLeftturns", swerveDrive.potSteerRL.getTurns());
+        SmartDashboard.putNumber("RearRightturns", swerveDrive.potSteerRR.getTurns());
         SmartDashboard.putNumber("StickX", oi.getJoystickX());
         SmartDashboard.putNumber("StickY", oi.getJoystickY());
         SmartDashboard.putNumber("StickZ", oi.getJoystickZ());
-        SmartDashboard.putData("FLpid", swerveDrive.frontLeft);
-        SmartDashboard.putNumber("FLError", swerveDrive.frontLeft.getError());
-        SmartDashboard.putNumber("FLoutput", swerveDrive.frontLeft.get());
-        SmartDashboard.putData("FRpid", swerveDrive.frontRight);
-        SmartDashboard.putNumber("FRError", swerveDrive.frontRight.getError());
-        SmartDashboard.putNumber("FRoutput", swerveDrive.frontRight.get());
-        SmartDashboard.putData("RLpid", swerveDrive.rearLeft);
-        SmartDashboard.putNumber("RLError", swerveDrive.rearLeft.getError());
-        SmartDashboard.putNumber("RLoutput", swerveDrive.rearLeft.get());
-        SmartDashboard.putData("RRpid", swerveDrive.rearRight);
-        SmartDashboard.putNumber("RRError", swerveDrive.rearRight.getError());
-        SmartDashboard.putNumber("RRoutput", swerveDrive.rearRight.get());
+        SmartDashboard.putData("FLpid", swerveDrive.pidFL);
+        SmartDashboard.putNumber("FLError", swerveDrive.pidFL.getError());
+        SmartDashboard.putNumber("FLoutput", swerveDrive.pidFL.get());
+        SmartDashboard.putData("FRpid", swerveDrive.pidFR);
+        SmartDashboard.putNumber("FRError", swerveDrive.pidFR.getError());
+        SmartDashboard.putNumber("FRoutput", swerveDrive.pidFR.get());
+        SmartDashboard.putData("RLpid", swerveDrive.pidRL);
+        SmartDashboard.putNumber("RLError", swerveDrive.pidRL.getError());
+        SmartDashboard.putNumber("RLoutput", swerveDrive.pidRL.get());
+        SmartDashboard.putData("RRpid", swerveDrive.pidRR);
+        SmartDashboard.putNumber("RRError", swerveDrive.pidRR.getError());
+        SmartDashboard.putNumber("RRoutput", swerveDrive.pidRR.get());
     }
 
     // Make this return true when this Command no longer needs to run execute()

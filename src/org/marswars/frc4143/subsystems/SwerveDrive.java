@@ -105,17 +105,17 @@ public class SwerveDrive extends Subsystem {
         i2c = DigitalModule.getInstance(1).getI2C(0x04 << 1);
         
         fileMap.load();
-        if (fileMap.m_Map.containsKey("FLOff")) {
-            FLOffset = ((Double)fileMap.m_Map.get("FLOff")).doubleValue();
+        if (fileMap.doubleMap.containsKey("FLOff")) {
+            FLOffset = ((Double)fileMap.doubleMap.get("FLOff")).doubleValue();
         }
-        if (fileMap.m_Map.containsKey("FROff")) {
-            FROffset = ((Double)fileMap.m_Map.get("FROff")).doubleValue();
+        if (fileMap.doubleMap.containsKey("FROff")) {
+            FROffset = ((Double)fileMap.doubleMap.get("FROff")).doubleValue();
         }
-        if (fileMap.m_Map.containsKey("RLOff")) {
-            RLOffset = ((Double)fileMap.m_Map.get("RLOff")).doubleValue();
+        if (fileMap.doubleMap.containsKey("RLOff")) {
+            RLOffset = ((Double)fileMap.doubleMap.get("RLOff")).doubleValue();
         }
-        if (fileMap.m_Map.containsKey("RROff")) {
-            RROffset = ((Double)fileMap.m_Map.get("RROff")).doubleValue();
+        if (fileMap.doubleMap.containsKey("RROff")) {
+            RROffset = ((Double)fileMap.doubleMap.get("RROff")).doubleValue();
         }
     }
 
@@ -392,10 +392,10 @@ public class SwerveDrive extends Subsystem {
         FROffset = FROff;
         RLOffset = RLOff;
         RROffset = RROff;
-        fileMap.m_Map.put("FLOffset", new Double(FLOff));
-        fileMap.m_Map.put("FROffset", new Double(FROff));
-        fileMap.m_Map.put("RLOffset", new Double(RLOff));
-        fileMap.m_Map.put("RROffset", new Double(RROff));
+        fileMap.doubleMap.put("FLOffset", new Double(FLOff));
+        fileMap.doubleMap.put("FROffset", new Double(FROff));
+        fileMap.doubleMap.put("RLOffset", new Double(RLOff));
+        fileMap.doubleMap.put("RROffset", new Double(RROff));
         fileMap.save();
     }
 }

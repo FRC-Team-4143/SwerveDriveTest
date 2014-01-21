@@ -18,10 +18,10 @@ import javax.microedition.io.Connector;
  */
 public class ConstantMap {
 
-    public Hashtable m_Map;
+    public Hashtable doubleMap;
 
     public ConstantMap() {
-        m_Map = new Hashtable(4);
+        doubleMap = new Hashtable(4);
     }
     
     public void save() {
@@ -35,11 +35,10 @@ public class ConstantMap {
             fileConnection = (FileConnection) Connector.open("file:///" + fileName, Connector.WRITE);
             fileConnection.create();
             theFile = fileConnection.openDataOutputStream();
-
-            for (Enumeration e = m_Map.keys(); e.hasMoreElements();) {
+            for (Enumeration e = doubleMap.keys(); e.hasMoreElements();) {
                 String key = (String) e.nextElement();
                 theFile.writeUTF((key + "|"));
-                theFile.writeUTF(m_Map.get(key).toString() + "\n");
+                theFile.writeUTF(doubleMap.get(key).toString() + "\n");
                 theFile.flush();
             }
             theFile.close();
@@ -56,17 +55,18 @@ public class ConstantMap {
         FileConnection fileConnection;
         DataInputStream theFile = null;
         try {
-            fileConnection = (FileConnection)Connector.open("file:///" + fileName, Connector.READ);
+            fileConnection = (FileConnection)Connector.open("file:///"
+                    + fileName, Connector.READ);
             theFile = fileConnection.openDataInputStream();
             while (theFile.available() > 0) {
                 String key = "";
                 String value = "";
                 boolean isKey = true;
-                char c = theFile.readChar();
-                while (c != '\n')  {
-                    if (c == '|') {
+                String c = theFile.readUTF();
+                while (!"\n".equals(c))  {
+                    if ("|".equals(c)) {
                         isKey = false;
-                        c = theFile.readChar();
+                        c = theFile.readUTF();
                         continue;
                     }
                     if (isKey) {
@@ -74,14 +74,15 @@ public class ConstantMap {
                     } else {
                         value += c;
                     }
-                    c = theFile.readChar();
+                    c = theFile.readUTF();
                 }
-                m_Map.put(key, new Double(Double.parseDouble(value)));
+                doubleMap.put(key, new Double(Double.parseDouble(value)));
             }
             theFile.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

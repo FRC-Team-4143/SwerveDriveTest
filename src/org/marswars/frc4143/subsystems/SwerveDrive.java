@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.marswars.frc4143.AnalogChannelVolt;
 import org.marswars.frc4143.ConstantMap;
 import org.marswars.frc4143.RobotMap;
@@ -117,6 +118,10 @@ public class SwerveDrive extends Subsystem {
         if (fileMap.doubleMap.containsKey("RROff")) {
             RROffset = ((Double)fileMap.doubleMap.get("RROff")).doubleValue();
         }
+        SmartDashboard.putNumber("FLOffset", FLOffset);
+        SmartDashboard.putNumber("FROffset", FROffset);
+        SmartDashboard.putNumber("RLOffset", RLOffset);
+        SmartDashboard.putNumber("RROffset", RROffset);
     }
 
     public void initDefaultCommand() {
@@ -396,6 +401,10 @@ public class SwerveDrive extends Subsystem {
         fileMap.doubleMap.put("FROffset", new Double(FROff));
         fileMap.doubleMap.put("RLOffset", new Double(RLOff));
         fileMap.doubleMap.put("RROffset", new Double(RROff));
+        SmartDashboard.putNumber("FLOffset", FLOffset);
+        SmartDashboard.putNumber("FROffset", FROffset);
+        SmartDashboard.putNumber("RLOffset", RLOffset);
+        SmartDashboard.putNumber("RROffset", RROffset);
         fileMap.save();
     }
 }

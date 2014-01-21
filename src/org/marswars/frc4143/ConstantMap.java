@@ -76,6 +76,7 @@ public class ConstantMap {
                     }
                     c = theFile.readUTF();
                 }
+                System.out.println("Loaded: " + key + " " + value);
                 doubleMap.put(key, new Double(Double.parseDouble(value)));
             }
             theFile.close();

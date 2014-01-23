@@ -59,23 +59,10 @@ public class ConstantMap {
                     + fileName, Connector.READ);
             theFile = fileConnection.openDataInputStream();
             while (theFile.available() > 0) {
-                String key = "";
-                String value = "";
-                boolean isKey = true;
-                String c = theFile.readUTF();
-                while (!"\n".equals(c))  {
-                    if ("|".equals(c)) {
-                        isKey = false;
-                        c = theFile.readUTF();
-                        continue;
-                    }
-                    if (isKey) {
-                        key += c;
-                    } else {
-                        value += c;
-                    }
-                    c = theFile.readUTF();
-                }
+                String key = theFile.readUTF();
+                key = key.substring(0, key.length() - 1);
+                String value = theFile.readUTF();
+                value = value.substring(0, value.length() - 1);
                 System.out.println("Loaded: " + key + " " + value);
                 doubleMap.put(key, new Double(Double.parseDouble(value)));
             }

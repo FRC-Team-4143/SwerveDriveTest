@@ -3,10 +3,9 @@ package org.marswars.frc4143.subsystems;
 import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.DigitalModule;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,10 +64,10 @@ public class SwerveDrive extends Subsystem {
     private double FRInv = 1.;
     private double RLInv = 1.;
     private double RRInv = 1.;
-    private double FLOffset;
-    private double FROffset;
-    private double RLOffset;
-    private double RROffset;
+    private double FLOffset = 0.;
+    private double FROffset = 0.;
+    private double RLOffset = 0.;
+    private double RROffset = 0.;
     private double W;
     private static ConstantMap fileMap = new ConstantMap();
 
@@ -104,24 +103,7 @@ public class SwerveDrive extends Subsystem {
         rearRight.enable();
 
         i2c = DigitalModule.getInstance(1).getI2C(0x04 << 1);
-        
-        fileMap.load();
-        if (fileMap.doubleMap.containsKey("FLOff")) {
-            FLOffset = ((Double)fileMap.doubleMap.get("FLOff")).doubleValue();
-        }
-        if (fileMap.doubleMap.containsKey("FROff")) {
-            FROffset = ((Double)fileMap.doubleMap.get("FROff")).doubleValue();
-        }
-        if (fileMap.doubleMap.containsKey("RLOff")) {
-            RLOffset = ((Double)fileMap.doubleMap.get("RLOff")).doubleValue();
-        }
-        if (fileMap.doubleMap.containsKey("RROff")) {
-            RROffset = ((Double)fileMap.doubleMap.get("RROff")).doubleValue();
-        }
-        SmartDashboard.putNumber("FLOffset", FLOffset);
-        SmartDashboard.putNumber("FROffset", FROffset);
-        SmartDashboard.putNumber("RLOffset", RLOffset);
-        SmartDashboard.putNumber("RROffset", RROffset);
+        retrieveOffsets();
     }
 
     public void initDefaultCommand() {
@@ -134,7 +116,15 @@ public class SwerveDrive extends Subsystem {
         outputLED();
     }
 
+    private void retrieveOffsets() {
+        FLOffset = Preferences.getInstance().getDouble("FLOffset", FLOffset);
+        FROffset = Preferences.getInstance().getDouble("FROffset", FROffset);
+        RLOffset = Preferences.getInstance().getDouble("RLOffset", RLOffset);
+        RROffset = Preferences.getInstance().getDouble("RROffset", RROffset);
+    }
+
     public void Crab(double twist, double y, double x, double brake) {
+        SmartDashboard.putBoolean("Unwinding", unwinding);
         if (unwinding
                 || Math.abs(positionFL.getTurns()) > 5
                 || Math.abs(positionFR.getTurns()) > 5
@@ -162,16 +152,16 @@ public class SwerveDrive extends Subsystem {
         double RLSetPoint = 2.5;
         double RRSetPoint = 2.5;
 
-        if (DP != 0 || BP != 0) {
+        if (Math.abs(DP) > 1E-6 || Math.abs(BP) > 1E-6) {
             FLSetPoint = (2.5 + 2.5 / Math.PI * MathUtils.atan2(BP, DP));
         }
-        if (BP != 0 || CP != 0) {
+        if (Math.abs(BP) > 1E-6 || Math.abs(CP) > 1E-6) {
             FRSetPoint = (2.5 + 2.5 / Math.PI * MathUtils.atan2(BP, CP));
         }
-        if (AP != 0 || DP != 0) {
+        if (Math.abs(AP) > 1E-6 || Math.abs(DP) > 1E-6) {
             RLSetPoint = (2.5 + 2.5 / Math.PI * MathUtils.atan2(AP, DP));
         }
-        if (AP != 0 || CP != 0) {
+        if (Math.abs(AP) > 1E-6 || Math.abs(CP) > 1E-6) {
             RRSetPoint = (2.5 + 2.5 / Math.PI * MathUtils.atan2(AP, CP));
         }
 
@@ -350,7 +340,7 @@ public class SwerveDrive extends Subsystem {
             }
             pid.setSetpoint(temp);
             return true;
-        } else if (turns < 1) {
+        } else if (turns < -1) {
             temp = wheel.getAverageVoltage() + 1.0;
             if (temp > 5.0) {
                 temp = temp - 5.0;
@@ -397,14 +387,10 @@ public class SwerveDrive extends Subsystem {
         FROffset = FROff;
         RLOffset = RLOff;
         RROffset = RROff;
-        fileMap.doubleMap.put("FLOffset", new Double(FLOff));
-        fileMap.doubleMap.put("FROffset", new Double(FROff));
-        fileMap.doubleMap.put("RLOffset", new Double(RLOff));
-        fileMap.doubleMap.put("RROffset", new Double(RROff));
-        SmartDashboard.putNumber("FLOffset", FLOffset);
-        SmartDashboard.putNumber("FROffset", FROffset);
-        SmartDashboard.putNumber("RLOffset", RLOffset);
-        SmartDashboard.putNumber("RROffset", RROffset);
-        fileMap.save();
+        Preferences.getInstance().putDouble("FLOffset", FLOffset);
+        Preferences.getInstance().putDouble("FROffset", FROffset);
+        Preferences.getInstance().putDouble("RLOffset", RLOffset);
+        Preferences.getInstance().putDouble("RROffset", RROffset);
+        Preferences.getInstance().save();
     }
 }

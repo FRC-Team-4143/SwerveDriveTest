@@ -36,7 +36,7 @@ public class SwerveDriveTest extends IterativeRobot {
         // Initialize all subsystems
         CommandBase.init();
         
-        CommandBase.swerveDrive.setWheelbase(21.5 / 2, 21.5 / 2, 21.5 / 2);
+        CommandBase.swerveDrive.setWheelbase(21.5 / 2, 21.5 / 2);
         //CommandBase.swerveDrive.setMaxSpeed(10.);
     }
 

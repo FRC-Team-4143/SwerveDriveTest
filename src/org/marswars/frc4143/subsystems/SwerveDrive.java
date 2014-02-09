@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.marswars.frc4143.AnalogChannelVolt;
-import org.marswars.frc4143.ConstantMap;
 import org.marswars.frc4143.RobotMap;
 import org.marswars.frc4143.commands.CrabDrive;
 
@@ -69,7 +68,6 @@ public class SwerveDrive extends Subsystem {
     private double RLOffset = 0.;
     private double RROffset = 0.;
     private double W;
-    private static ConstantMap fileMap = new ConstantMap();
 
     public SwerveDrive() {
         frontRight.setContinuous(RobotMap.CONTINUOUS);

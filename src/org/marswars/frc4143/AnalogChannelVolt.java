@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.AnalogTriggerOutput;
 import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -61,7 +62,7 @@ public class AnalogChannelVolt extends AnalogChannel {
         } else if (temp > rev) {
             temp = rev; // max
         }
-        temp = (temp / ratio) + ((m_count.get() % ratio) * halfrev); // half scale
+        temp = (temp / ratio) + (Math.abs(m_count.get() % ratio) * halfrev); // half scale
         temp = rev - temp; // inverse
         return temp;
     }

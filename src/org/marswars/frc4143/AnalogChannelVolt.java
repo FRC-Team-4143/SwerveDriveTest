@@ -32,9 +32,8 @@ public class AnalogChannelVolt extends AnalogChannel {
     public AnalogChannelVolt(int moduleNumber, int channel) {
         super(moduleNumber, channel);
 
-        this.getModule().setSampleRate(1000);
-
-        m_trig = new AnalogTrigger(moduleNumber, channel);
+        this.getModule().setSampleRate(500);
+        m_trig = new AnalogTrigger(this);
         m_trig.setFiltered(true);
         m_trig.setLimitsVoltage(1.35, 3.65);
 
@@ -54,9 +53,6 @@ public class AnalogChannelVolt extends AnalogChannel {
         m_count.start();
     }
 
-    public void start() {
-    }
-
     public double getVoltage() {
         double temp = super.getVoltage();
         temp = (((temp - halfrev) * scale) + halfrev);  // scale
@@ -65,7 +61,7 @@ public class AnalogChannelVolt extends AnalogChannel {
         } else if (temp > rev) {
             temp = rev; // max
         }
-        temp = (temp / ratio) + ((m_count.get() % ratio) * halfrev); // half scale
+        temp = (temp / ratio) + (Math.abs(m_count.get() % ratio) * halfrev); // half scale
         temp = rev - temp; // inverse
         return temp;
     }

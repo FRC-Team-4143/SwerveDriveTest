@@ -9,6 +9,10 @@ import org.marswars.frc4143.commands.SMDB;
 import org.marswars.frc4143.commands.SetWheelOffsets;
 import org.marswars.frc4143.commands.ToggleLock;
 import org.marswars.frc4143.commands.ToggleRobotFront;
+import org.marswars.frc4143.commands.UnwindFL;
+import org.marswars.frc4143.commands.UnwindFR;
+import org.marswars.frc4143.commands.UnwindRL;
+import org.marswars.frc4143.commands.UnwindRR;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -28,13 +32,22 @@ public class OI {
         SmartDashboard.putData("SetWheelOffsets", new SetWheelOffsets());
         SmartDashboard.putData("ResetTurns", new ResetTurns());
         SmartDashboard.putData("SMDB", new SMDB());
+        SmartDashboard.putData("Unwind FL", new UnwindFL());
+        SmartDashboard.putData("Unwind FR", new UnwindFR());
+        SmartDashboard.putData("Unwind RL", new UnwindRL());
+        SmartDashboard.putData("Unwind RR", new UnwindRR());
 
 
     }
-    //SmartDashboard.putData("ResetGyro", new ResetGyro());
-    
 
-    public double getJoystickX() {
+//1 - LeftX
+//2 - LeftY
+//3 - Triggers (Each trigger = 0 to 1, axis value = right - left)
+//4 - RightX
+//5 - RightY
+//6 - DPad Left/Right
+
+    public double getJoystickLeftX() {
         if (Math.abs(xbox.getRawAxis(1)) < deadZone) {
             return 0;
         } else {
@@ -42,7 +55,7 @@ public class OI {
         }
     }
 
-    public double getJoystickY() {
+    public double getJoystickLeftY() {
         if (Math.abs(xbox.getRawAxis(2)) < deadZone) {
             return 0;
         } else {
@@ -50,7 +63,7 @@ public class OI {
         }
     }
 
-    public double getJoystickZ() {
+    public double getJoystickRightX() {
         if (Math.abs(xbox.getRawAxis(4)) < deadZone) {
             return 0;
         } else {
@@ -58,11 +71,15 @@ public class OI {
         }
     }
 
-    public double getJoystickA() {
+    public double getTriggers() {
         if (Math.abs(xbox.getRawAxis(3)) < deadZone) {
             return 0;
         } else {
             return xbox.getRawAxis(3);
         }
+    }
+    
+    public double getDPadX() {
+        return xbox.getRawAxis(6);
     }
 }

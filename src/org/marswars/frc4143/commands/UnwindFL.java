@@ -1,14 +1,18 @@
+
 package org.marswars.frc4143.commands;
 
 /**
  *
  * @author bradmiller
  */
-public class CrabDrive extends CommandBase {
+public class UnwindFL extends CommandBase {
+    
+    boolean isFinished = false;
 
-    public CrabDrive() {
+    public UnwindFL() {
         // Use requires() here to declare subsystem dependencies
         requires(swerveDrive);
+        setRunWhenDisabled(true);
     }
 
     // Called just before this Command runs the first time
@@ -17,17 +21,17 @@ public class CrabDrive extends CommandBase {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-        swerveDrive.Crab(oi.getJoystickRightX() / 2., -oi.getJoystickLeftY(),
-                oi.getJoystickLeftX(), Math.abs(oi.getTriggers()));
+        isFinished = swerveDrive.unwindFL();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return isFinished;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+        isFinished = false;
     }
 
     // Called when another command which requires one or more of the same

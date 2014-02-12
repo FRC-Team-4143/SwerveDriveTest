@@ -285,10 +285,13 @@ public class SwerveDrive extends Subsystem {
     public boolean unwind() {
         boolean retval = false;
         isUnwinding = true;
-        retval = unwindWheel(potSteerFL, pidFL)
-                || unwindWheel(potSteerFR, pidFR)
-                || unwindWheel(potSteerRL, pidRL)
-                || unwindWheel(potSteerRR, pidRR);
+        retval = unwindWheel(potSteerFL, pidFL);
+        if (unwindWheel(potSteerFR, pidFR))
+            retval = true;
+        if (unwindWheel(potSteerRL, pidRL))
+            retval = true;
+        if (unwindWheel(potSteerRR, pidRR))
+            retval = true;
         isUnwinding = false;
         return retval;
     }
@@ -329,14 +332,14 @@ public class SwerveDrive extends Subsystem {
         double temp;
         double turns = wheel.getTurns();
         if (turns >= 1) {
-            temp = wheel.getAverageVoltage() - 1.0;
+            temp = wheel.getAverageVoltage() - 0.5;
             if (temp < 0.0) {
                 temp = 5.0 + temp;
             }
             pid.setSetpoint(temp);
             return true;
-        } else if (turns <= 1) {
-            temp = wheel.getAverageVoltage() + 1.0;
+        } else if (turns <= -1) {
+            temp = wheel.getAverageVoltage() + 0.5;
             if (temp > 5.0) {
                 temp = temp - 5.0;
             }

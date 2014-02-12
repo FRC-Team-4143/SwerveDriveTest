@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.marswars.frc4143.commands.AngleDown;
 import org.marswars.frc4143.commands.AngleUp;
 import org.marswars.frc4143.commands.ResetTurns;
+import org.marswars.frc4143.commands.RetrieveOffsets;
 import org.marswars.frc4143.commands.SMDB;
 import org.marswars.frc4143.commands.SetWheelOffsets;
 import org.marswars.frc4143.commands.ToggleLock;
@@ -36,6 +37,7 @@ public class OI {
         SmartDashboard.putData("Unwind FR", new UnwindFR());
         SmartDashboard.putData("Unwind RL", new UnwindRL());
         SmartDashboard.putData("Unwind RR", new UnwindRR());
+        SmartDashboard.putData("Retrieve Offsets", new RetrieveOffsets());
 
 
     }
